@@ -22,26 +22,27 @@ public class ValidationTest {
     }
     @Test
             public void test() {
-        driver.get("http://demo.guru99.com/V1/index.php");
-        WebDriverWait wait = new WebDriverWait(driver, 20);
-        WebElement username = driver.findElement(By.xpath("/html/body/form/table/tbody/tr[1]/td[2]/input"));
-        WebElement pass = driver.findElement(By.xpath("/html/body/form/table/tbody/tr[1]/td[2]/input"));
-        WebElement body = driver.findElement(By.cssSelector("body"));
+        WebElement usernameControl = driver.findElement(By.name("uid"));
+        WebElement passwordControl = driver.findElement(By.name("password"));
+        WebElement misc = driver.findElement(By.cssSelector("body"));
+        WebElement userValidationMessage = driver.findElement(By.id("message23"));
+        WebElement passwordValidationMessage = driver.findElement(By.id("message18"));
 
-        username.click();
-        pass.click();
-        body.click();
+        Assert.assertEquals(userValidationMessage.getAttribute("style"), "");
+        Assert.assertEquals(passwordValidationMessage.getAttribute("style"), "");
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("*[@id=\"message23\"]")));
-        WebElement passValidation =  driver.findElement(By.xpath("*[@id=\"message23\"]"));
-        String actualpassValidation = passValidation.getText();
-        String expectedpassValidation = "User-ID must not be blank";
-        Assert.assertEquals(actualpassValidation, expectedpassValidation);
+        usernameControl.click();
+        passwordControl.click();
+        misc.click();
 
-        username.sendKeys("a");
-        pass.sendKeys("a");
-        Assert.assertEquals(actualpassValidation, expectedpassValidation);
-        System.out.println("Test passed");
+        Assert.assertEquals(userValidationMessage.getAttribute("style"), "visibility: visible;");
+        Assert.assertEquals(passwordValidationMessage.getAttribute("style"), "visibility: visible;");
+
+        usernameControl.sendKeys("a");
+        passwordControl.sendKeys("a");
+
+        Assert.assertEquals(userValidationMessage.getAttribute("style"), "visibility: hidden;");
+        Assert.assertEquals(passwordValidationMessage.getAttribute("style"), "visibility: hidden;");
     }
     @AfterTest
     public void closeSite(){
